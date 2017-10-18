@@ -49,3 +49,14 @@
   `(eval (list 'defclass ',class-name ',parents
 	       (mnas-class-slot ',class-name ',slots)
 	       (list :documentation ,doc-string))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defmacro mnas-print-defclass ((class-name doc-string parents slots))
+  "Предназначен для генерации класса
+Пример использования:
+;;;; (mnas-defclass ('class-name \"Doc for class\" '() '((slot-1 nil \"Doc for slot-1\") (slot-2 nil \"Doc for slot-2\"))))
+"
+  `(list 'defclass ',class-name ',parents
+	       (mnas-class-slot ',class-name ',slots)
+	       (list :documentation ,doc-string)))

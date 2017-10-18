@@ -46,8 +46,6 @@
 Пример использования:
 ;;;; (mnas-defclass ('class-name \"Doc for class\" '() '((slot-1 nil \"Doc for slot-1\") (slot-2 nil \"Doc for slot-2\"))))
 "
-  `(eval (list 'defclass ,class-name ,parents
-	       (mnas-class-slot ,class-name ,slots)
+  `(eval (list 'defclass ',class-name ',parents
+	       (mnas-class-slot ',class-name ',slots)
 	       (list :documentation ,doc-string))))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

@@ -56,7 +56,7 @@
 	       (mnas-class-slot ',class-name ',slots)
 	       (list :documentation ,doc-string))))
 
-(expotr 'mnas-defclass)
+(export 'mnas-defclass)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -69,4 +69,4 @@
 	       (mnas-class-slot ',class-name ',slots)
 	       (list :documentation ,doc-string)))
 
-(expotr 'mnas-print-defclass)
+(export 'mnas-print-defclass)

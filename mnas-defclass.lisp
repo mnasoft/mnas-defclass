@@ -3,6 +3,9 @@
 (in-package #:mnas-defclass)
 
 ;;; "mnas-defclass" goes here. Hacks and glory await!
+;;;; Шаблон для генерации класса Common Lisp
+
+(setf *print-case* :downcase)
 
 (defun make-slot (class slot i-form doc)
   "Генерирует отдельный слот
@@ -45,12 +48,13 @@
   "Предназначен для генерации класса
 Пример использования:
 
- (mnas-defclass
+ (mnas-defclass:mnas-defclass
   (Cl-name \"Cl-name doc\"
- 	  (parent-1 parent-2)
- 	  ((slot-1         \"Init-form for slot-1\"  \"Doc for slot-1\")
- 	   (slot-2         'Init-form-for-slot2     \"Doc for slot-1\")
- 	   (slot-3         3                        \"Doc for slot-3\"))))
+	   (parent-1 parent-2)
+	   ((slot-1         \"Init-form for slot-1\"  \"Doc for slot-1\")
+	    (slot-2         'Init-form-for-slot2     \"Doc for slot-1\")
+	    (slot-3         3                        \"Doc for slot-3\")
+	    (slot-4         (null t)                 \"Doc for slot-4\"))))
 "
   `(eval (list 'defclass ',class-name ',parents
 	       (mnas-class-slot ',class-name ',slots)
@@ -60,13 +64,20 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defmacro mnas-print-defclass ((class-name doc-string parents slots))
+(defmacro mnas-defclass-print ((class-name doc-string parents slots))
   "Предназначен для генерации класса
 Пример использования:
-;;;; (mnas-defclass ('class-name \"Doc for class\" '() '((slot-1 nil \"Doc for slot-1\") (slot-2 nil \"Doc for slot-2\"))))
+
+  (mnas-defclass:mnas-defclass-print
+  (Cl-name \"Cl-name doc\"
+	   (parent-1 parent-2)
+	   ((slot-1         \"Init-form for slot-1\"  \"Doc for slot-1\")
+	    (slot-2         'Init-form-for-slot2     \"Doc for slot-1\")
+	    (slot-3         3                        \"Doc for slot-3\")
+	    (slot-4         (null t)                 \"Doc for slot-4\"))))
 "
   `(list 'defclass ',class-name ',parents
 	       (mnas-class-slot ',class-name ',slots)
 	       (list :documentation ,doc-string)))
 
-(export 'mnas-print-defclass)
+(export 'mnas-defclass-print)

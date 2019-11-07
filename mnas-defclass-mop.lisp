@@ -18,28 +18,30 @@
   (mapcar #'(lambda (el) (list (string-to-slot el) el)) str-list))
 
 (export 'make-class)
-(defun make-class (class-name names-docs &key (parents) (o-stream (make-string-output-stream)))
+(defun make-class (class-name names-docs &key (parents) &aux (o-stream (make-string-output-stream)))
   (let ((class-string
 	 (progn
+	   (format o-stream "(progn ~%")
 	   (format o-stream "(defclass ~a ~s~%" class-name parents)
 	   (format o-stream "  (~%")
 	   (mapc
 	    #'(lambda (el)
-		(format o-stream "   (~a :accessor ~a-~a :initarg :~a :initform nil :documentation ~s)~%"
-			(first el)
-			class-name
-			(first el)
-			(first el)
-			(second el))
-		)
+		(format
+		 o-stream "   (~a :accessor ~a-~a :initarg :~a :initform nil :documentation ~s)~%"
+		 (first el) class-name (first el) (first el) (second el)))
 	    (strings-to-slots names-docs))
 	   (format o-stream ")")
+	   (format o-stream ")~%")
+   	   (format o-stream "(defmethod print-object ((obj ~a) stream) (mnas-defclass:print-slots obj stream))" class-name)
 	   (format o-stream ")")
 	   (get-output-stream-string o-stream))))
     (format t "~a" class-string)
     (eval (read-from-string class-string))))
 
-
+(export 'make-class-and-init-items)
+(defun make-class-and-init-items (class-name table &key (parents))
+  (make-class class-name (car table) :parents parents)
+  (mnas-defclass:init-objects-by-list (read-from-string class-name) (cdr table)))
 
 (export 'for-each-slot)
 (defun for-each-slot (obj func-for-slot)
@@ -54,9 +56,9 @@
 (export 'init-obj-by-list)
 (defun init-obj-by-list (obj lst)
   "Инициализация объекта по списку значений"
-  (mapc #'(lambda (val s-name) (setf (slot-value obj s-name) val))
-	lst
-	(for-each-slot obj #'slot-name))
+  (mapcar #'(lambda (val s-name) (setf (slot-value obj s-name) val))
+	  lst
+	  (for-each-slot obj #'slot-name))
   obj)
 
 (export 'init-objects-by-list)
@@ -65,7 +67,7 @@
   (mapcar #'(lambda (el) (init-obj-by-list (make-instance class-type) el)) lst))
 
 (export 'filter)
-(defun filter (obj-lst func-filter) (mapcan func-filter obj-lst))
+(defun filter (func-filter obj-lst) (mapcan func-filter obj-lst))
 
 (export 'class-desccription)
 (defun class-desccription (class-item)
@@ -74,19 +76,10 @@
 	  (for-each-slot class-item #'slot-name)
 	  (for-each-slot class-item #'slot-doc)))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(defun foo (obj)
-  (if (string= (zm-struct-deiystvuet-otmenena obj) "") (list obj) nil))
-
-(defun foo-1 (obj) (list obj))
-
-(defmethod print-object ((x zm-struct) s)
-  (format s "~A " (zm-struct-ceh x))
-  (format s "~A " (zm-struct-ceh_pr x))
-  (format s "~A " (zm-struct-naim_ps x))
-  (format s "~% " ))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-
+(export 'print-slots)
+(defun print-slots (obj stream)
+  (format stream "~&")
+  (map nil 
+       #'(lambda (sl-name) (format stream "|~a" (slot-value obj sl-name)))
+       (for-each-slot obj #'slot-name))
+  (format stream "|"))

@@ -8,5 +8,6 @@
   :depends-on (#:mnas-string)
   :components ((:file "package")
                (:file "mnas-defclass")
-	       (:file "mnas-defclass-mop.lisp")))
+	       (:file "mnas-defclass-mop")
+	       ))
 

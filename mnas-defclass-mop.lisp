@@ -38,6 +38,19 @@
     (format t "~a" class-string)
     (eval (read-from-string class-string))))
 
+(export 'init-obj-by-list)
+(defun init-obj-by-list (obj lst)
+  "Инициализация объекта по списку значений"
+  (mapcar #'(lambda (val s-name) (setf (slot-value obj s-name) val))
+	  lst
+	  (for-each-slot obj #'slot-name))
+  obj)
+
+(export 'init-objects-by-list)
+(defun init-objects-by-list (class-type lst)
+  "Инициализация объекта по списку значений"
+  (mapcar #'(lambda (el) (init-obj-by-list (make-instance class-type) el)) lst))
+
 (export 'make-class-and-init-items)
 (defun make-class-and-init-items (class-name table &key (parents))
   (make-class class-name (car table) :parents parents)
@@ -52,19 +65,6 @@
 
 (export 'slot-doc)
 (defun slot-doc   (slot-def) (documentation slot-def t))
-
-(export 'init-obj-by-list)
-(defun init-obj-by-list (obj lst)
-  "Инициализация объекта по списку значений"
-  (mapcar #'(lambda (val s-name) (setf (slot-value obj s-name) val))
-	  lst
-	  (for-each-slot obj #'slot-name))
-  obj)
-
-(export 'init-objects-by-list)
-(defun init-objects-by-list (class-type lst)
-  "Инициализация объекта по списку значений"
-  (mapcar #'(lambda (el) (init-obj-by-list (make-instance class-type) el)) lst))
 
 (export 'filter)
 (defun filter (func-filter obj-lst) (mapcan func-filter obj-lst))

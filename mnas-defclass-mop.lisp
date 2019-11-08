@@ -54,11 +54,13 @@
 (export 'make-class-and-init-items)
 (defun make-class-and-init-items (class-name table &key (parents))
   (make-class class-name (car table) :parents parents)
-  (mnas-defclass:init-objects-by-list (read-from-string class-name) (cdr table)))
+  (init-objects-by-list (read-from-string class-name) (cdr table)))
 
 (export 'for-each-slot)
 (defun for-each-slot (obj func-for-slot)
-    (mapcar func-for-slot (sb-mop:class-direct-slots (class-of obj))))
+  (mapcar
+   #'(lambda (el) (funcall func-for-slot el))
+   (sb-mop:class-direct-slots (class-of obj))))
 
 (export 'slot-name)
 (defun slot-name (slot-def) (sb-mop:slot-definition-name slot-def))
@@ -83,3 +85,9 @@
        #'(lambda (sl-name) (format stream "|~a" (slot-value obj sl-name)))
        (for-each-slot obj #'slot-name))
   (format stream "|"))
+
+(export 'for-each-object-slot-name)
+(defun for-each-object-slot-name (func obj)
+  (mapcar
+   #'(lambda (sl-name) (funcall func obj sl-name ))
+   (for-each-slot obj #'slot-name)))

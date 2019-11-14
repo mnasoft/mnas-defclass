@@ -58,3 +58,33 @@
 
 
 (disconnect-toplevel)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defparameter *is* (open "d:/PRG/msys32/home/namatv/org/tz/TZ.txt" :external-format :cp1251))
+(close *is*)
+
+(require :mnas-string)
+
+(defparameter *lines*    nil)
+
+(defparameter *curr-lst* nil)
+
+(defparameter *last-ln*  "")
+
+(progn 
+  (defparameter *ln*    (concatenate 'string *last-ln* (read-line *is*)))
+  (defparameter *l-str* (mnas-string:split "	" *ln*))
+  (if (evenp (count #\" (first (last *l-str*))))
+      (progn
+	(push *l-str* *lines*)
+	(setf *last-ln* ""
+	      *curr-lst* nil)
+	"PUSH")
+      (progn
+	(setf *last-ln* (first (last *l-str*)))
+	(setf *curr-lst* (append *curr-lst* (reverse (cdr (reverse *l-str*)))))
+      "WAIT")
+      ))
+
+(read-delimited-list #\Tab *is* nil)

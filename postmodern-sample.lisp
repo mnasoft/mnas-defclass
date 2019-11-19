@@ -61,30 +61,45 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defparameter *is* (open "d:/PRG/msys32/home/namatv/org/tz/TZ.txt" :external-format :cp1251))
-(close *is*)
+(defun read-from-exel-tab-text (f-name &key (external-format :cp1251))
+  "   Выполняет чтение из файла, экспортируемого из ΙΤ-предприятие 
+в exel и затем в текстовый файл (с разделителями табуляции).
+   Пример использования:
+@begin[lang=lisp](code)
+ (read-from-exel-tab-text \"d:/PRG/msys2/home/namatv/org/tz/TZ_3.txt\")
+@end(code)
+"
+  (labels ((remove-some-chars (str)
+	     (let ((rez str))
+	       (setf rez (string-trim " " rez))
+	       (when (and (< 2 (length rez))
+			  (char= #\" (char rez 0))
+			  (char= #\" (char rez (1- (length rez)))))
+		 (setf rez (subseq rez 1 (1- (length rez)))))
+	       (when (< 2 (length rez)) (setf rez (mnas-string:string-replace-all rez "\"\"" "\"")))
+	       (when (< 2 (length rez)) (setf rez (mnas-string:string-replace-all rez "  "   " " )))
+	       (when (< 2 (length rez)) (setf rez (mnas-string:string-replace-all rez "( "   "(" )))
+	       (when (< 2 (length rez)) (setf rez (mnas-string:string-replace-all rez " )"   ")" )))
+	       (when (< 2 (length rez)) (setf rez (mnas-string:string-replace-all rez "[ "   "[" )))
+	       (when (< 2 (length rez)) (setf rez (mnas-string:string-replace-all rez " ]"   "]" )))
+	       (when (< 2 (length rez)) (setf rez (mnas-string:string-replace-all rez "{ "   "{" )))
+	       (when (< 2 (length rez)) (setf rez (mnas-string:string-replace-all rez " }"   "}" )))
+	       rez)))
+    (with-open-file  (str f-name :external-format external-format)
+      (do ((lines    nil)
+	   (curr-lst nil)
+	   (last-ln  "")
+	   (l-str    nil)
+	   (line (read-line str nil 'eof) (read-line str nil 'eof)))
+	  ((eql line 'eof) (mapcar #'(lambda (lst) (mapcar #'remove-some-chars lst)) (nreverse lines)))
+	(setf l-str (mnas-string:split "	" (concatenate 'string last-ln line)))
+	(if (evenp (count #\" (first (last l-str))))
+	    (progn
+	      (setf curr-lst (append curr-lst l-str))
+	      (push curr-lst lines)
+	      (setf last-ln ""
+		    curr-lst nil))
+	    (progn
+	      (setf last-ln  (first (last l-str)))
+	      (setf curr-lst (append curr-lst (nreverse (cdr (nreverse l-str)))))))))))
 
-(require :mnas-string)
-
-(defparameter *lines*    nil)
-
-(defparameter *curr-lst* nil)
-
-(defparameter *last-ln*  "")
-
-(progn 
-  (defparameter *ln*    (concatenate 'string *last-ln* (read-line *is*)))
-  (defparameter *l-str* (mnas-string:split "	" *ln*))
-  (if (evenp (count #\" (first (last *l-str*))))
-      (progn
-	(push *l-str* *lines*)
-	(setf *last-ln* ""
-	      *curr-lst* nil)
-	"PUSH")
-      (progn
-	(setf *last-ln* (first (last *l-str*)))
-	(setf *curr-lst* (append *curr-lst* (reverse (cdr (reverse *l-str*)))))
-      "WAIT")
-      ))
-
-(read-delimited-list #\Tab *is* nil)

@@ -61,6 +61,7 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+(export 'read-from-exel-tab-text)
 (defun read-from-exel-tab-text (f-name &key (external-format :cp1251))
   "   Выполняет чтение из файла, экспортируемого из ΙΤ-предприятие 
 в exel и затем в текстовый файл (с разделителями табуляции).
@@ -103,3 +104,5 @@
 	      (setf last-ln  (first (last l-str)))
 	      (setf curr-lst (append curr-lst (nreverse (cdr (nreverse l-str)))))))))))
 
+
+  

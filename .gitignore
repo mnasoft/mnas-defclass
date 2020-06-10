@@ -3,5 +3,7 @@
 *.FASL
 *.fasl
 *.lisp-temp
+build
 \#*#
+
 .emacs.desktop

@@ -2,8 +2,6 @@
 
 (in-package #:mnas-defclass)
 
-(annot:enable-annot-syntax)
-
 ;;;; Шаблон для генерации класса Common Lisp
 
 (setf *print-case* :downcase)
@@ -35,7 +33,7 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-@annot.doc:doc
+(defun mnas-class-slot (name slots)
 "Предназначена для генерации слотов класса
 
  @b(Пример использования:)
@@ -47,13 +45,11 @@
     (CL-NAME-SLOT_2 :ACCESSOR CL-NAME-SLOT_2 :INITARG :SLOT_2 :DOCUMENTATION \"Doc 2\"))
 @end(code)
 "
-(defun mnas-class-slot (name slots)
   (mapcar #'(lambda (el) (make-slot name (first el) (second el) (third el) )) slots))
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-@export
-@annot.doc:doc
+(export 'mnas-defclass )
+(defmacro mnas-defclass ((class-name doc-string parents slots))
 "Предназначен для генерации класса
 Пример использования:
 
@@ -65,15 +61,14 @@
 	    (slot-3         3                        \"Doc for slot-3\")
 	    (slot-4         (null t)                 \"Doc for slot-4\"))))
 "
-(defmacro mnas-defclass ((class-name doc-string parents slots))
   `(eval (list 'defclass ',class-name ',parents
 	       (mnas-class-slot ',class-name ',slots)
 	       (list :documentation ,doc-string))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-@export
-@annot.doc:doc
+(export 'mnas-defclass-print )
+(defmacro mnas-defclass-print ((class-name doc-string parents slots))
 "@b(Описание:) метод @b(mnas-defclass-print) выполняет генерирование класса.
 
  @b(Пример использования:)
@@ -98,7 +93,6 @@
           (:documentation \"Cl-name doc\"))
 @end(code)
 "
-(defmacro mnas-defclass-print ((class-name doc-string parents slots))
   `(list 'defclass ',class-name ',parents
 	       (mnas-class-slot ',class-name ',slots)
 	       (list :documentation ,doc-string)))

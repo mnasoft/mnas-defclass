@@ -8,10 +8,10 @@
 
 (export 'string-to-slot)
 (defun string-to-slot (str)
-  (mnas-string:translit
+  (mnas-string/translit:translit
    (string-downcase (string-trim " \"" (concatenate 'string  str)))
    :ht
-   mnas-string:*space-cir-gr->en*))
+   mnas-string/translit::*space-cir-gr->en*))
 
 (export 'strings-to-slots)
 (defun strings-to-slots (str-list)

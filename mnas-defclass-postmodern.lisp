@@ -1,6 +1,6 @@
 ;;;; mnas-defclass-postmodern.lisp
 
-(in-package #:mnas-defclass)
+(in-package :mnas-defclass)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

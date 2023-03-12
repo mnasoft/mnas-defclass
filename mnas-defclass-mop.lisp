@@ -1,6 +1,6 @@
 ;;;; mnas-defclass-mop.lisp
 
-(in-package #:mnas-defclass)
+(in-package :mnas-defclass)
 
 (export '*last-class-string-definition*)
 (defparameter *last-class-string-definition* nil

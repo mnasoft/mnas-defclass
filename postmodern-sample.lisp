@@ -2,7 +2,7 @@
 
 ;;;; Пример использования postmodern
 
-(in-package #:mnas-defclass)
+(in-package :mnas-defclass)
 
 (use-package :postmodern)
 

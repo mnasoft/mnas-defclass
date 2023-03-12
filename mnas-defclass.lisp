@@ -1,6 +1,6 @@
 ;;;; mnas-defclass.lisp
 
-(in-package #:mnas-defclass)
+(in-package :mnas-defclass)
 
 ;;;; Шаблон для генерации класса Common Lisp
 
